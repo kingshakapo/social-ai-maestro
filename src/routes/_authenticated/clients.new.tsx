@@ -61,7 +61,12 @@ function NewClient() {
       if (!user) throw new Error("Not signed in");
       const { data, error } = await supabase
         .from("clients")
-        .insert({ ...form, preferred_platforms: platforms, owner_id: user.id })
+        .insert({
+          ...form,
+          business_name: form.business_name,
+          preferred_platforms: platforms,
+          owner_id: user.id,
+        })
         .select("id")
         .single();
       if (error) throw error;
