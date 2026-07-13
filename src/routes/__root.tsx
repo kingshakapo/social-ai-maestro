@@ -77,14 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SocialPilot AI — The AI OS for social media managers" },
+      { name: "description", content: "SocialPilot AI plans, writes, and schedules on-brand social content for every client — powered by AI." },
+      { property: "og:title", content: "SocialPilot AI — The AI OS for social media managers" },
+      { property: "og:description", content: "The AI operating system for social media managers, agencies, and freelancers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
