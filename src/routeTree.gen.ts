@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSchedulerRouteImport } from './routes/_authenticated/scheduler'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCampaignsRouteImport } from './routes/_authenticated/campaigns'
@@ -47,6 +48,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
 const AuthenticatedSchedulerRoute = AuthenticatedSchedulerRouteImport.update({
   id: '/scheduler',
   path: '/scheduler',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/campaigns': typeof AuthenticatedCampaignsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/reports': typeof AuthenticatedReportsRoute
   '/scheduler': typeof AuthenticatedSchedulerRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/campaigns': typeof AuthenticatedCampaignsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/library': typeof AuthenticatedLibraryRoute
+  '/reports': typeof AuthenticatedReportsRoute
   '/scheduler': typeof AuthenticatedSchedulerRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/_authenticated/campaigns': typeof AuthenticatedCampaignsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/library': typeof AuthenticatedLibraryRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/scheduler': typeof AuthenticatedSchedulerRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/clients/$id': typeof AuthenticatedClientsIdRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/dashboard'
     | '/library'
+    | '/reports'
     | '/scheduler'
     | '/settings'
     | '/clients/$id'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/campaigns'
     | '/dashboard'
     | '/library'
+    | '/reports'
     | '/scheduler'
     | '/settings'
     | '/clients/$id'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/_authenticated/campaigns'
     | '/_authenticated/dashboard'
     | '/_authenticated/library'
+    | '/_authenticated/reports'
     | '/_authenticated/scheduler'
     | '/_authenticated/settings'
     | '/_authenticated/clients/$id'
@@ -244,6 +256,13 @@ declare module '@tanstack/react-router' {
       path: '/scheduler'
       fullPath: '/scheduler'
       preLoaderRoute: typeof AuthenticatedSchedulerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/library': {
@@ -327,6 +346,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCampaignsRoute: typeof AuthenticatedCampaignsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSchedulerRoute: typeof AuthenticatedSchedulerRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedClientsIdRoute: typeof AuthenticatedClientsIdRoute
@@ -342,6 +362,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCampaignsRoute: AuthenticatedCampaignsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSchedulerRoute: AuthenticatedSchedulerRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedClientsIdRoute: AuthenticatedClientsIdRoute,
