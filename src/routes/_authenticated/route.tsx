@@ -45,14 +45,14 @@ const nav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Clients", url: "/clients", icon: Users },
   { title: "AI Studio", url: "/ai-studio", icon: Wand2 },
-  { title: "Calendar", url: "/calendar", icon: Calendar, soon: true },
-  { title: "Content Library", url: "/library", icon: Library, soon: true },
-  { title: "Brand Kits", url: "/brand-kits", icon: Palette, soon: true },
-  { title: "Campaigns", url: "/campaigns", icon: Megaphone, soon: true },
-  { title: "Scheduler", url: "/scheduler", icon: Clock, soon: true },
-  { title: "Analytics", url: "/analytics", icon: BarChart3, soon: true },
-  { title: "Reports", url: "/reports", icon: FileText, soon: true },
-  { title: "Invoices", url: "/invoices", icon: Receipt, soon: true },
+  { title: "Calendar", url: "/calendar", icon: Calendar },
+  { title: "Content Library", url: "/library", icon: Library },
+  { title: "Brand Kits", url: "/brand-kits", icon: Palette },
+  { title: "Campaigns", url: "/campaigns", icon: Megaphone },
+  { title: "Scheduler", url: "/scheduler", icon: Clock },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Reports", url: "/reports", icon: FileText },
+  { title: "Invoices", url: "/invoices", icon: Receipt },
 ];
 
 function AuthedLayout() {
@@ -83,22 +83,10 @@ function AuthedLayout() {
                     return (
                       <SidebarMenuItem key={item.url}>
                         <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
-                          {item.soon ? (
-                            <button
-                              type="button"
-                              className="w-full opacity-60 cursor-not-allowed"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <item.icon />
-                              <span className="flex-1 text-left">{item.title}</span>
-                              <span className="text-[10px] uppercase tracking-wide text-muted-foreground group-data-[collapsible=icon]:hidden">soon</span>
-                            </button>
-                          ) : (
-                            <Link to={item.url}>
-                              <item.icon />
-                              <span>{item.title}</span>
-                            </Link>
-                          )}
+                          <Link to={item.url}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
