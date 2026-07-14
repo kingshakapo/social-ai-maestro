@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedAiStudioRouteImport } from './routes/_authenticated/ai-studio'
@@ -37,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/ai-studio': typeof AuthenticatedAiStudioRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/library': typeof AuthenticatedLibraryRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/clients/new': typeof AuthenticatedClientsNewRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/ai-studio': typeof AuthenticatedAiStudioRoute
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/library': typeof AuthenticatedLibraryRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/clients/new': typeof AuthenticatedClientsNewRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/_authenticated/ai-studio': typeof AuthenticatedAiStudioRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/library': typeof AuthenticatedLibraryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/clients/$id': typeof AuthenticatedClientsIdRoute
   '/_authenticated/clients/new': typeof AuthenticatedClientsNewRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/ai-studio'
     | '/calendar'
     | '/dashboard'
+    | '/library'
     | '/settings'
     | '/clients/$id'
     | '/clients/new'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/ai-studio'
     | '/calendar'
     | '/dashboard'
+    | '/library'
     | '/settings'
     | '/clients/$id'
     | '/clients/new'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ai-studio'
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
+    | '/_authenticated/library'
     | '/_authenticated/settings'
     | '/_authenticated/clients/$id'
     | '/_authenticated/clients/new'
@@ -177,6 +189,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/library': {
+      id: '/_authenticated/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof AuthenticatedLibraryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -228,6 +247,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAiStudioRoute: typeof AuthenticatedAiStudioRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedClientsIdRoute: typeof AuthenticatedClientsIdRoute
   AuthenticatedClientsNewRoute: typeof AuthenticatedClientsNewRoute
@@ -238,6 +258,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAiStudioRoute: AuthenticatedAiStudioRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedClientsIdRoute: AuthenticatedClientsIdRoute,
   AuthenticatedClientsNewRoute: AuthenticatedClientsNewRoute,
