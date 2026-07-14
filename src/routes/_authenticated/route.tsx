@@ -83,22 +83,10 @@ function AuthedLayout() {
                     return (
                       <SidebarMenuItem key={item.url}>
                         <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
-                          {item.soon ? (
-                            <button
-                              type="button"
-                              className="w-full opacity-60 cursor-not-allowed"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <item.icon />
-                              <span className="flex-1 text-left">{item.title}</span>
-                              <span className="text-[10px] uppercase tracking-wide text-muted-foreground group-data-[collapsible=icon]:hidden">soon</span>
-                            </button>
-                          ) : (
-                            <Link to={item.url}>
-                              <item.icon />
-                              <span>{item.title}</span>
-                            </Link>
-                          )}
+                          <Link to={item.url}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
