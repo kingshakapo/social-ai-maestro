@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "post images public read" ON storage.objects;
+CREATE POLICY "post images owner read" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'post-images' AND auth.uid()::text = (storage.foldername(name))[1]);
