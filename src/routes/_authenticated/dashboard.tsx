@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, FileText, Sparkles, TrendingUp, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — SocialPilot AI" }] }),
@@ -58,6 +59,12 @@ function Dashboard() {
           <Link to="/clients/new"><Button className="rounded-full">New client</Button></Link>
         </div>
       </div>
+
+      <OnboardingChecklist
+        hasClient={(stats?.clients ?? 0) > 0}
+        hasContent={(stats?.totalContent ?? 0) > 0}
+        hasScheduled={(stats?.scheduled ?? 0) > 0}
+      />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
         {cards.map((c) => (
