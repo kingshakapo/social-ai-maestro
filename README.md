@@ -85,8 +85,8 @@ marketers running multiple brands.
 
 - [ ] **Native platform publishing** — Meta, X, LinkedIn, TikTok OAuth +
       publish APIs (Scheduler currently queues but does not push).
-- [ ] **AI image generation** — hero images and image variants per post
-      (currently text-only briefs).
+- [x] **AI image generation** — streaming image generation from each post's
+      image brief, stored per user in the `post-images` bucket.
 - [ ] **Billing** — Stripe integration for plan subscriptions and per-workspace
       quotas.
 - [ ] **Email verification enforced** in production + password reset flow with
@@ -94,9 +94,11 @@ marketers running multiple brands.
 - [ ] **Rate limiting** on AI generation server function (per user, per hour).
 - [ ] **RLS review** — pen-test all policies with a second Supabase account.
 - [ ] **Legal** — Terms of Service, Privacy Policy, DPA for EU clients.
-- [ ] **Onboarding** — 3-step guided setup for the first client.
+- [x] **Onboarding** — 3-step guided setup on the dashboard (add client →
+      generate → schedule), dismissible per user.
 - [ ] **Error monitoring** — Sentry or equivalent wired to production.
-- [ ] **Empty-state polish** across every module.
+- [x] **Empty-state polish** — shared `EmptyState` component across library,
+      calendar, scheduler, and clients.
 
 ## ✨ Good-to-Have Features (post-launch roadmap)
 
