@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CalendarDays } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
   head: () => ({ meta: [{ title: "Calendar — SocialPilot AI" }] }),
@@ -32,8 +34,14 @@ function CalendarPage() {
       <p className="text-sm text-muted-foreground mt-1">Everything scheduled across your clients.</p>
 
       {!data?.length ? (
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-10 text-center text-sm text-muted-foreground">
-          Nothing scheduled yet. Schedule posts from the Content Library.
+        <div className="mt-10">
+          <EmptyState
+            icon={CalendarDays}
+            title="Nothing scheduled yet"
+            description="Generate content, then schedule it from the library — your whole month appears here at a glance."
+            actionLabel="Open Content Library"
+            actionTo="/library"
+          />
         </div>
       ) : (
         <div className="mt-8 space-y-6">

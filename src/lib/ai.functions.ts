@@ -55,8 +55,9 @@ export const generateSocialContent = createServerFn({ method: "POST" })
       parsed = { caption: text, hashtags: "", cta: "", image_brief: "" };
     }
 
+    let contentId: string | null = null;
     if (data.save) {
-      await context.supabase.from("generated_content").insert({
+      const { data: inserted } = await context.supabase.from("generated_content").insert({
         owner_id: context.userId,
         client_id: data.clientId ?? null,
         platform: data.platform,
@@ -67,8 +68,9 @@ export const generateSocialContent = createServerFn({ method: "POST" })
         cta: parsed.cta ?? "",
         image_brief: parsed.image_brief ?? "",
         status: "draft",
-      });
+      }).select("id").maybeSingle();
+      contentId = inserted?.id ?? null;
     }
 
-    return parsed;
+    return { ...parsed, contentId };
   });

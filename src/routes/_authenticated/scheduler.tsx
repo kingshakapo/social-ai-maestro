@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Clock } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export const Route = createFileRoute("/_authenticated/scheduler")({
   head: () => ({ meta: [{ title: "Scheduler — SocialPilot AI" }] }),
@@ -31,10 +33,18 @@ function SchedulerPage() {
         <Link to="/library"><Button variant="outline" className="rounded-full">Manage library</Button></Link>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border/60 bg-card">
-        {!data?.length ? (
-          <div className="p-10 text-center text-sm text-muted-foreground">Queue is empty.</div>
-        ) : (
+      {!data?.length ? (
+        <div className="mt-6">
+          <EmptyState
+            icon={Clock}
+            title="Your queue is empty"
+            description="Drafts and scheduled posts show up here in publish order, so you always know what goes out next."
+            actionLabel="Create a post"
+            actionTo="/ai-studio"
+          />
+        </div>
+      ) : (
+        <div className="mt-6 rounded-2xl border border-border/60 bg-card">
           <ul className="divide-y divide-border/60">
             {data.map((i) => (
               <li key={i.id} className="p-4 flex items-center gap-3">
@@ -46,8 +56,8 @@ function SchedulerPage() {
               </li>
             ))}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
 
       <p className="mt-4 text-xs text-muted-foreground">
         Auto-publish connections (Meta, X, LinkedIn, TikTok) are configured per client on the client page.

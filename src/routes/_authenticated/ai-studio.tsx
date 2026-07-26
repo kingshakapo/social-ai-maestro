@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Copy } from "lucide-react";
+import { Sparkles, Copy, ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { streamImage, dataUrlToBlob } from "@/lib/streamImage";
 
 export const Route = createFileRoute("/_authenticated/ai-studio")({
   head: () => ({ meta: [{ title: "AI Studio — SocialPilot AI" }] }),
@@ -28,7 +29,16 @@ function AiStudio() {
   const [contentType, setContentType] = useState("Post");
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ caption: string; hashtags: string; cta: string; image_brief: string } | null>(null);
+  const [result, setResult] = useState<{
+    caption: string;
+    hashtags: string;
+    cta: string;
+    image_brief: string;
+    contentId: string | null;
+  } | null>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const [imageFinal, setImageFinal] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const { data: clients } = useQuery({
     queryKey: ["clients-select"],
@@ -43,6 +53,8 @@ function AiStudio() {
     if (!prompt.trim()) return toast.error("Enter a prompt");
     setLoading(true);
     setResult(null);
+    setImage(null);
+    setImageFinal(false);
     try {
       const res = await generate({
         data: {
@@ -70,6 +82,50 @@ function AiStudio() {
   const copy = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied");
+  };
+
+  const makeImage = async () => {
+    if (!result?.image_brief) return;
+    setImageLoading(true);
+    setImage(null);
+    setImageFinal(false);
+    try {
+      let last: string | null = null;
+      await streamImage(
+        `${result.image_brief}\n\nStyle: premium, editorial social media visual for ${platform}. No text overlays, no watermarks.`,
+        (dataUrl, isFinal) => {
+          setImage(dataUrl);
+          if (isFinal) {
+            last = dataUrl;
+            setImageFinal(true);
+          }
+        },
+      );
+
+      if (last && result.contentId) {
+        const { data: userData } = await supabase.auth.getUser();
+        const uid = userData.user?.id;
+        if (uid) {
+          const path = `${uid}/${result.contentId}.png`;
+          const blob = await dataUrlToBlob(last);
+          const { error } = await supabase.storage
+            .from("post-images")
+            .upload(path, blob, { contentType: "image/png", upsert: true });
+          if (!error) {
+            await supabase.from("generated_content").update({ image_url: path }).eq("id", result.contentId);
+            qc.invalidateQueries({ queryKey: ["library"] });
+          }
+        }
+      }
+      toast.success("Image ready");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Image generation failed";
+      if (msg.includes("429")) toast.error("Rate limit reached. Try again shortly.");
+      else if (msg.includes("402")) toast.error("AI credits exhausted. Add credits to continue.");
+      else toast.error(msg);
+    } finally {
+      setImageLoading(false);
+    }
   };
 
   return (
@@ -140,6 +196,28 @@ function AiStudio() {
               <Field label="Hashtags" value={result.hashtags} onCopy={copy} />
               <Field label="Call to action" value={result.cta} onCopy={copy} />
               <Field label="Image brief" value={result.image_brief} onCopy={copy} />
+
+              {result.image_brief && (
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-xl w-full"
+                    disabled={imageLoading}
+                    onClick={makeImage}
+                  >
+                    {imageLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+                    {imageLoading ? "Painting your visual…" : image ? "Regenerate image" : "Generate image"}
+                  </Button>
+                  {image && (
+                    <img
+                      src={image}
+                      alt="AI generated visual for this post"
+                      className={`mt-3 w-full rounded-xl border border-border/60 transition-[filter] duration-500 ${imageFinal ? "blur-0" : "blur-2xl"}`}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

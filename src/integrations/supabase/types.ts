@@ -126,6 +126,7 @@ export type Database = {
           hashtags: string | null
           id: string
           image_brief: string | null
+          image_url: string | null
           owner_id: string
           platform: string
           prompt: string | null
@@ -142,6 +143,7 @@ export type Database = {
           hashtags?: string | null
           id?: string
           image_brief?: string | null
+          image_url?: string | null
           owner_id: string
           platform: string
           prompt?: string | null
@@ -158,6 +160,7 @@ export type Database = {
           hashtags?: string | null
           id?: string
           image_brief?: string | null
+          image_url?: string | null
           owner_id?: string
           platform?: string
           prompt?: string | null
@@ -181,6 +184,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          onboarding_completed: boolean
           updated_at: string
         }
         Insert: {
@@ -188,6 +192,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          onboarding_completed?: boolean
           updated_at?: string
         }
         Update: {
@@ -195,6 +200,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          onboarding_completed?: boolean
           updated_at?: string
         }
         Relationships: []
