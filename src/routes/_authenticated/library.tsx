@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Trash2, Library as LibraryIcon } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 
 export const Route = createFileRoute("/_authenticated/library")({
   head: () => ({ meta: [{ title: "Content Library — SocialPilot AI" }] }),
@@ -17,9 +18,20 @@ function LibraryPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("generated_content")
-        .select("id, platform, content_type, caption, hashtags, cta, status, created_at")
+        .select("id, platform, content_type, caption, hashtags, cta, status, image_url, created_at")
         .order("created_at", { ascending: false });
-      return data ?? [];
+      const rows = data ?? [];
+      const paths = rows.map((r) => r.image_url).filter((p): p is string => !!p);
+      let signed: Record<string, string> = {};
+      if (paths.length) {
+        const { data: urls } = await supabase.storage.from("post-images").createSignedUrls(paths, 3600);
+        signed = Object.fromEntries(
+          (urls ?? [])
+            .filter((u) => u.signedUrl && u.path)
+            .map((u) => [u.path as string, u.signedUrl]),
+        );
+      }
+      return rows.map((r) => ({ ...r, signedImage: r.image_url ? signed[r.image_url] : undefined }));
     },
   });
 
@@ -52,8 +64,14 @@ function LibraryPage() {
       <p className="text-sm text-muted-foreground mt-1">Every piece of content your AI has generated.</p>
 
       {!data?.length ? (
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-10 text-center text-sm text-muted-foreground">
-          Nothing here yet.
+        <div className="mt-10">
+          <EmptyState
+            icon={LibraryIcon}
+            title="Your library is empty"
+            description="Every caption, hashtag set and visual you generate lands here — ready to copy, edit, or schedule."
+            actionLabel="Generate your first post"
+            actionTo="/ai-studio"
+          />
         </div>
       ) : (
         <div className="mt-8 grid md:grid-cols-2 gap-3">
@@ -64,6 +82,14 @@ function LibraryPage() {
                 <span className="text-muted-foreground">{c.content_type}</span>
                 <span className="ml-auto text-muted-foreground capitalize">{c.status}</span>
               </div>
+              {c.signedImage && (
+                <img
+                  src={c.signedImage}
+                  alt={`Generated visual for ${c.platform} ${c.content_type}`}
+                  loading="lazy"
+                  className="mt-3 w-full rounded-xl border border-border/60"
+                />
+              )}
               <p className="text-sm mt-3 whitespace-pre-wrap line-clamp-6">{c.caption}</p>
               {c.hashtags && <p className="text-xs text-accent mt-2">{c.hashtags}</p>}
               <div className="mt-4 flex gap-2">
