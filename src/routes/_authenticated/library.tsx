@@ -25,11 +25,9 @@ function LibraryPage() {
       let signed: Record<string, string> = {};
       if (paths.length) {
         const { data: urls } = await supabase.storage.from("post-images").createSignedUrls(paths, 3600);
-        signed = Object.fromEntries(
-          (urls ?? [])
-            .filter((u) => u.signedUrl && u.path)
-            .map((u) => [u.path as string, u.signedUrl]),
-        );
+        for (const u of urls ?? []) {
+          if (u.path && u.signedUrl) signed[u.path] = u.signedUrl;
+        }
       }
       return rows.map((r) => ({ ...r, signedImage: r.image_url ? signed[r.image_url] : undefined }));
     },
