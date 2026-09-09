@@ -45,16 +45,52 @@ dev; disable in production via Cloud → Users → Auth Settings.
 - `profiles` — user profile, auto-created on signup via trigger.
 - `clients` — client workspaces with full Brand DNA columns.
 - `generated_content` — every AI-generated post with status (`draft`,
-  `scheduled`, `published`), platform, and schedule time.
+  `scheduled`, `published`, `failed`), platform, schedule time, image path,
+  `published_at`, `external_post_id`, `publish_error`, `social_account_id`.
+- `social_accounts` — connected publishing destinations per client
+  (platform, account name, external id, tokens, expiry, meta).
+- `oauth_states` — short-lived CSRF/PKCE handshake records.
+- `cron_tokens` — private (no RLS policies, service-role only) shared key the
+  scheduled job uses to authenticate against the publish endpoint.
 
-**Server functions.** `src/lib/ai.functions.ts` — AI generation via
-`createServerFn` + `requireSupabaseAuth`. All AI calls go through the Lovable
-AI Gateway (no user API keys).
+**Server functions.**
+- `src/lib/ai.functions.ts` — AI generation (Lovable AI Gateway, no user keys).
+- `src/lib/social.functions.ts` — platform status, OAuth start, list/disconnect
+  accounts, `publishNow`.
+- `src/lib/publishing.server.ts` — per-platform OAuth + publish adapters.
+
+**Server routes.**
+- `GET /api/public/oauth/callback/:platform` — OAuth callback; validates state,
+  exchanges the code, upserts `social_accounts`, redirects back with a toast.
+- `POST /api/public/publish-due` — publishes due scheduled posts. Requires
+  `x-cron-secret: $CRON_SECRET` or the DB `x-cron-token`. Called by a pg_cron
+  job every 5 minutes (288 runs/day; keeps posts within ~5 min of their slot).
+
+**Native publishing.**
+
+| Platform | Auth | Publishing |
+| --- | --- | --- |
+| Facebook Page | Meta OAuth (long-lived page token) | text + image posts |
+| Instagram Business | via the same Meta OAuth | image posts (image required) |
+| X | OAuth 2.0 PKCE + refresh | text posts (280 chars) |
+| LinkedIn | OAuth 2.0 (`w_member_social`) | text posts on the member feed |
+| TikTok | OAuth 2.0 PKCE + refresh | photo posts (image required) |
+
+**Required secrets** (per platform, from each developer portal). A platform's
+Connect button stays disabled until its pair is present:
+`META_APP_ID` / `META_APP_SECRET` ·
+`X_CLIENT_ID` / `X_CLIENT_SECRET` ·
+`LINKEDIN_CLIENT_ID` / `LINKEDIN_CLIENT_SECRET` ·
+`TIKTOK_CLIENT_KEY` / `TIKTOK_CLIENT_SECRET` ·
+`CRON_SECRET` (auto-generated).
+
+Register this redirect URI in each developer portal:
+`https://<your-domain>/api/public/oauth/callback/{meta|x|linkedin|tiktok}`
 
 **Modules shipped.**
-Dashboard · Clients (CRUD + Brand DNA) · AI Studio · Calendar ·
-Content Library · Brand Kits · Campaigns · Scheduler · Analytics ·
-Reports (CSV export) · Invoices · Settings.
+Dashboard · Clients (CRUD + Brand DNA + publishing connections) · AI Studio ·
+Calendar · Content Library · Brand Kits · Campaigns · Scheduler (publish now +
+auto-publish) · Analytics · Reports (CSV export) · Invoices · Settings.
 
 **Ops.**
 - Secrets managed in Cloud (LOVABLE_API_KEY auto-provisioned).
