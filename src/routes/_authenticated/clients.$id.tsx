@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Wand2, ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { SocialConnections } from "@/components/SocialConnections";
 
 export const Route = createFileRoute("/_authenticated/clients/$id")({
   head: () => ({ meta: [{ title: "Client — SocialPilot AI" }] }),
@@ -83,6 +84,10 @@ function ClientDetail() {
             <div className="text-sm mt-1 whitespace-pre-wrap">{v || <span className="text-muted-foreground">—</span>}</div>
           </div>
         ))}
+      </div>
+
+      <div className="mb-8">
+        <SocialConnections clientId={id} />
       </div>
 
       <div className="rounded-2xl border border-border/60 bg-card p-6">

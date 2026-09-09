@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { SocialConnections } from "@/components/SocialConnections";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [{ title: "Settings — SocialPilot AI" }] }),
@@ -49,6 +50,10 @@ function SettingsPage() {
           <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
         </div>
         <Button onClick={save}>Save changes</Button>
+      </div>
+
+      <div className="mt-6">
+        <SocialConnections />
       </div>
     </div>
   );
