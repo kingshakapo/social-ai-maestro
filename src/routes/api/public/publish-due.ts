@@ -8,13 +8,25 @@ export const Route = createFileRoute("/api/public/publish-due")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.CRON_SECRET;
-        if (!secret) return new Response("Not configured", { status: 503 });
-        const provided = request.headers.get("x-cron-secret");
-        if (!provided || provided !== secret) return new Response("Unauthorized", { status: 401 });
-
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { publishContentRow } = await import("@/lib/publishing.server");
+
+        const secret = process.env.CRON_SECRET;
+        const providedSecret = request.headers.get("x-cron-secret");
+        const providedToken = request.headers.get("x-cron-token");
+
+        let authorized = false;
+        if (secret && providedSecret && providedSecret === secret) {
+          authorized = true;
+        } else if (providedToken) {
+          const { data: row } = await supabaseAdmin
+            .from("cron_tokens")
+            .select("token")
+            .eq("name", "publish_due")
+            .maybeSingle();
+          authorized = !!row?.token && row.token === providedToken;
+        }
+        if (!authorized) return new Response("Unauthorized", { status: 401 });
 
         const { data: due } = await supabaseAdmin
           .from("generated_content")
