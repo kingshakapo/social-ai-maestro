@@ -25,8 +25,10 @@ import { Route as AuthenticatedBrandKitsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedAiStudioRouteImport } from './routes/_authenticated/ai-studio'
 import { Route as AuthenticatedClientsIndexRouteImport } from './routes/_authenticated/clients.index'
+import { Route as ApiPublicPublishDueRouteImport } from './routes/api/public/publish-due'
 import { Route as AuthenticatedClientsNewRouteImport } from './routes/_authenticated/clients.new'
 import { Route as AuthenticatedClientsIdRouteImport } from './routes/_authenticated/clients.$id'
+import { Route as ApiPublicOauthCallbackPlatformRouteImport } from './routes/api/public/oauth.callback.$platform'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -108,6 +110,11 @@ const AuthenticatedClientsIndexRoute =
     path: '/clients/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicPublishDueRoute = ApiPublicPublishDueRouteImport.update({
+  id: '/api/public/publish-due',
+  path: '/api/public/publish-due',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedClientsNewRoute = AuthenticatedClientsNewRouteImport.update({
   id: '/clients/new',
   path: '/clients/new',
@@ -118,6 +125,12 @@ const AuthenticatedClientsIdRoute = AuthenticatedClientsIdRouteImport.update({
   path: '/clients/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicOauthCallbackPlatformRoute =
+  ApiPublicOauthCallbackPlatformRouteImport.update({
+    id: '/api/public/oauth/callback/$platform',
+    path: '/api/public/oauth/callback/$platform',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -136,7 +149,9 @@ export interface FileRoutesByFullPath {
   '/api/generate-image': typeof ApiGenerateImageRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/clients/new': typeof AuthenticatedClientsNewRoute
+  '/api/public/publish-due': typeof ApiPublicPublishDueRoute
   '/clients/': typeof AuthenticatedClientsIndexRoute
+  '/api/public/oauth/callback/$platform': typeof ApiPublicOauthCallbackPlatformRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -155,7 +170,9 @@ export interface FileRoutesByTo {
   '/api/generate-image': typeof ApiGenerateImageRoute
   '/clients/$id': typeof AuthenticatedClientsIdRoute
   '/clients/new': typeof AuthenticatedClientsNewRoute
+  '/api/public/publish-due': typeof ApiPublicPublishDueRoute
   '/clients': typeof AuthenticatedClientsIndexRoute
+  '/api/public/oauth/callback/$platform': typeof ApiPublicOauthCallbackPlatformRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -176,7 +193,9 @@ export interface FileRoutesById {
   '/api/generate-image': typeof ApiGenerateImageRoute
   '/_authenticated/clients/$id': typeof AuthenticatedClientsIdRoute
   '/_authenticated/clients/new': typeof AuthenticatedClientsNewRoute
+  '/api/public/publish-due': typeof ApiPublicPublishDueRoute
   '/_authenticated/clients/': typeof AuthenticatedClientsIndexRoute
+  '/api/public/oauth/callback/$platform': typeof ApiPublicOauthCallbackPlatformRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -197,7 +216,9 @@ export interface FileRouteTypes {
     | '/api/generate-image'
     | '/clients/$id'
     | '/clients/new'
+    | '/api/public/publish-due'
     | '/clients/'
+    | '/api/public/oauth/callback/$platform'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -216,7 +237,9 @@ export interface FileRouteTypes {
     | '/api/generate-image'
     | '/clients/$id'
     | '/clients/new'
+    | '/api/public/publish-due'
     | '/clients'
+    | '/api/public/oauth/callback/$platform'
   id:
     | '__root__'
     | '/'
@@ -236,7 +259,9 @@ export interface FileRouteTypes {
     | '/api/generate-image'
     | '/_authenticated/clients/$id'
     | '/_authenticated/clients/new'
+    | '/api/public/publish-due'
     | '/_authenticated/clients/'
+    | '/api/public/oauth/callback/$platform'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -244,6 +269,8 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ApiGenerateImageRoute: typeof ApiGenerateImageRoute
+  ApiPublicPublishDueRoute: typeof ApiPublicPublishDueRoute
+  ApiPublicOauthCallbackPlatformRoute: typeof ApiPublicOauthCallbackPlatformRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -360,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClientsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/publish-due': {
+      id: '/api/public/publish-due'
+      path: '/api/public/publish-due'
+      fullPath: '/api/public/publish-due'
+      preLoaderRoute: typeof ApiPublicPublishDueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/clients/new': {
       id: '/_authenticated/clients/new'
       path: '/clients/new'
@@ -373,6 +407,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/clients/$id'
       preLoaderRoute: typeof AuthenticatedClientsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/oauth/callback/$platform': {
+      id: '/api/public/oauth/callback/$platform'
+      path: '/api/public/oauth/callback/$platform'
+      fullPath: '/api/public/oauth/callback/$platform'
+      preLoaderRoute: typeof ApiPublicOauthCallbackPlatformRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -419,6 +460,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ApiGenerateImageRoute: ApiGenerateImageRoute,
+  ApiPublicPublishDueRoute: ApiPublicPublishDueRoute,
+  ApiPublicOauthCallbackPlatformRoute: ApiPublicOauthCallbackPlatformRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
