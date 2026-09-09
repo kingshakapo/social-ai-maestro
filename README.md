@@ -119,8 +119,12 @@ marketers running multiple brands.
 
 ## 🚧 Launch Blockers (must-fix before public launch)
 
-- [ ] **Native platform publishing** — Meta, X, LinkedIn, TikTok OAuth +
-      publish APIs (Scheduler currently queues but does not push).
+- [x] **Native platform publishing** — Facebook, Instagram, X, LinkedIn and
+      TikTok OAuth + publish APIs, per-client account connections, publish-now
+      and auto-publish of due scheduled posts. Each platform still needs its
+      developer-app credentials added and its app reviewed/approved by the
+      platform before live posting works for non-test accounts.
+- [ ] **Video publishing** — TikTok/Reels video uploads (photo + text only today).
 - [x] **AI image generation** — streaming image generation from each post's
       image brief, stored per user in the `post-images` bucket.
 - [ ] **Billing** — Stripe integration for plan subscriptions and per-workspace
