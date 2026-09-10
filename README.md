@@ -64,7 +64,7 @@ dev; disable in production via Cloud → Users → Auth Settings.
   exchanges the code, upserts `social_accounts`, redirects back with a toast.
 - `POST /api/public/publish-due` — publishes due scheduled posts. Requires
   `x-cron-secret: $CRON_SECRET` or the DB `x-cron-token`. Called by a pg_cron
-  job every 5 minutes (288 runs/day; keeps posts within ~5 min of their slot).
+  job hourly (24 runs/day; keeps posts within ~1 hour of their slot).
 
 **Native publishing.**
 
